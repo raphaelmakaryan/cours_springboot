@@ -26,28 +26,81 @@ public class WebAppController {
 
     @RequestMapping(path = "/clients", method = RequestMethod.GET)
     public List<Client> clients() {
-        return clientService.displayClients();
+        return clientService.findAll();
     }
 
     @RequestMapping(path = "/clients/{id}", method = RequestMethod.GET)
     public Client getClients(@PathVariable(value = "id") int id) {
-        return clientService.getClient(id);
+        return clientService.findById(id);
     }
 
-    @RequestMapping(value = "/addClient", method = RequestMethod.GET)
-    public ResponseEntity<Map<String, Object>> addClient() {
+    @RequestMapping(value = "/getAddClient", method = RequestMethod.GET)
+    public ResponseEntity<Map<String, Object>> addClientGet() {
         try {
             int id = clientService.getLength();
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
             response.put("message", "Votre client a été ajoutée !");
             response.put("id", id);
-            clientService.addClient(id, "Sarah", "Popelier", "105A5S2A47D", LocalDate.of(2025, 12, 2));
+            clientService.save(id, "Sarah", "Popelier", clientService.createCodeAlphanumeric(), LocalDate.of(2025, 12, 2));
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();
             response.put("success", false);
             response.put("message", "Votre client n'a pas été ajoutée !");
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
+    @RequestMapping(value = "/addClient", method = RequestMethod.POST)
+    public ResponseEntity<Map<String, Object>> addClientPost() {
+        try {
+            int id = clientService.getLength();
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Votre client a été ajoutée !");
+            response.put("id", id);
+            clientService.save(id, "Sarah", "Popelier", clientService.createCodeAlphanumeric(), LocalDate.of(2025, 12, 2));
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "Votre client n'a pas été ajoutée !");
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
+    @PutMapping("/clients/{id}/edit")
+    public ResponseEntity<Map<String, Object>> editClient(@PathVariable(value = "id") int idUSer) {
+        try {
+            this.clientService.editTestClient(idUSer);
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Votre client a été modifié !");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "Votre client n'a pas été modifié !");
+            response.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
+    @DeleteMapping("/clients/{id}/delete")
+    public ResponseEntity<Map<String, Object>> deleteClient(@PathVariable(value = "id") int idUSer) {
+        try {
+            this.clientService.delete(idUSer);
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Votre client a été supprimé !");
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", false);
+            response.put("message", "Votre client n'a pas été supprimé !");
             response.put("error", e.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
