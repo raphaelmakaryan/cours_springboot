@@ -1,33 +1,37 @@
 package fr.raphaelmakaryan.cours_springboot.service;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 import java.time.LocalDate;
 
 @Entity
 public class Client {
     @Id
-    public int id;
-    public String firstName;
-    public String lastName;
-    public LocalDate birthday;
-    public String license;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-    public Client(int id, String firstName, String lastName, String license, LocalDate birthday) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.license = license;
-        this.birthday = birthday;
+    @Column(name = "first_name")
+    private String first_name;
+
+    @Column(name = "last_name")
+    private String last_name;
+
+    @Column(name = "license")
+    private String license;
+
+    @Column(name = "birthday")
+    private LocalDate birthday;
+
+    public Client() {
+        super();
     }
 
     public String getLastName() {
-        return lastName;
+        return this.last_name;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    public void setlastName(String last_name) {
+        this.last_name = last_name;
     }
 
     public LocalDate getbirthday() {
@@ -46,12 +50,12 @@ public class Client {
         this.license = license;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getfirst_name() {
+        return first_name;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setfirst_name(String first_name) {
+        this.first_name = first_name;
     }
 
     public int getId() {
@@ -66,8 +70,8 @@ public class Client {
     public String toString() {
         return "Client{" +
                 "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
+                ", first_name='" + first_name + '\'' +
+                ", last_name='" + last_name + '\'' +
                 ", birthday=" + birthday +
                 ", license=" + license +
                 '}';

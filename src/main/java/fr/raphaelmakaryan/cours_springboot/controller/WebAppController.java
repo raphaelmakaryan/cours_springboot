@@ -1,13 +1,17 @@
 package fr.raphaelmakaryan.cours_springboot.controller;
 
 import fr.raphaelmakaryan.cours_springboot.service.Client;
+import fr.raphaelmakaryan.cours_springboot.service.ClientDao;
 import fr.raphaelmakaryan.cours_springboot.service.ClientService;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,9 +19,11 @@ import java.util.Map;
 @RestController
 public class WebAppController {
     private final ClientService clientService;
+    private final ClientDao clientDao;
 
-    public WebAppController(ClientService clientService) {
+    public WebAppController(ClientService clientService, ClientDao clientDao) {
         this.clientService = clientService;
+        this.clientDao = clientDao;
     }
 
     @RequestMapping("/")
@@ -26,33 +32,32 @@ public class WebAppController {
     }
 
     @RequestMapping(path = "/clients", method = RequestMethod.GET)
-    public List<Client> clients() {
-        return clientService.findAll();
+    public MappingJacksonValue clientsJPA() {
+        List<Client> clients = clientDao.findAll();
+        MappingJacksonValue allClients = new MappingJacksonValue(clients);
+        return allClients;
     }
 
     @RequestMapping(path = "/clients/{id}", method = RequestMethod.GET)
     public Client getClients(@PathVariable(value = "id") int id) {
-        return clientService.findById(id);
+        return clientDao.findById(id);
     }
 
     @RequestMapping(value = "/clients", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> addClientPost() {
         try {
             Map<String, Object> response = new HashMap<>();
-            int id = clientService.getLength();
             String codeAlpha = clientService.createCodeAlphanumeric();
             String verifyLicense = "http://localhost:8081/licenses/" + codeAlpha;
             RestTemplate restTemplate = new RestTemplate();
             boolean result = restTemplate.getForObject(verifyLicense, Boolean.class);
             if (result) {
-                clientService.save(id, "Sarah", "Popelier", codeAlpha, LocalDate.of(2025, 12, 2));
+                clientService.createClient(codeAlpha, clientDao);
                 response.put("success", true);
                 response.put("message", "Votre client a été ajoutée !");
-                response.put("id", id);
             } else {
                 response.put("success", false);
                 response.put("message", "Cet licenses existe deja !");
-                response.put("id", id);
             }
             return ResponseEntity.ok(response);
         } catch (Exception e) {
@@ -67,7 +72,9 @@ public class WebAppController {
     @PutMapping("/clients/{id}")
     public ResponseEntity<Map<String, Object>> editClient(@PathVariable(value = "id") int idUSer) {
         try {
-            this.clientService.editTestClient(idUSer);
+            Client client = clientDao.findById(idUSer);
+            client.setfirst_name("Raphael");
+            clientDao.save(client);
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
             response.put("message", "Votre client a été modifié !");
@@ -84,7 +91,7 @@ public class WebAppController {
     @DeleteMapping("/clients/{id}")
     public ResponseEntity<Map<String, Object>> deleteClient(@PathVariable(value = "id") int idUSer) {
         try {
-            this.clientService.delete(idUSer);
+            clientDao.delete(clientDao.findById(idUSer));
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
             response.put("message", "Votre client a été supprimé !");
