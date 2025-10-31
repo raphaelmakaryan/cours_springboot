@@ -1,5 +1,6 @@
 package fr.raphaelmakaryan.cours_springboot.service;
 
+import fr.raphaelmakaryan.cours_springboot.entity.Client;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;

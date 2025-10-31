@@ -1,10 +1,17 @@
-package fr.raphaelmakaryan.cours_springboot.service;
+package fr.raphaelmakaryan.cours_springboot.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 
 import java.time.LocalDate;
 
+@Data
+@Builder
+@AllArgsConstructor
 @Entity
+@Table(name = "Client")
 public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
