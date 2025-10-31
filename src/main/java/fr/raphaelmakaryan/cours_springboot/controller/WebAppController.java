@@ -34,26 +34,7 @@ public class WebAppController {
         return clientService.findById(id);
     }
 
-    @RequestMapping(value = "/getAddClient", method = RequestMethod.GET)
-    public ResponseEntity<Map<String, Object>> addClientGet() {
-        try {
-            int id = clientService.getLength();
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("message", "Votre client a été ajoutée !");
-            response.put("id", id);
-            clientService.save(id, "Sarah", "Popelier", clientService.createCodeAlphanumeric(), LocalDate.of(2025, 12, 2));
-            return ResponseEntity.ok(response);
-        } catch (Exception e) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", false);
-            response.put("message", "Votre client n'a pas été ajoutée !");
-            response.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-        }
-    }
-
-    @RequestMapping(value = "/addClient", method = RequestMethod.POST)
+    @RequestMapping(value = "/clients", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> addClientPost() {
         try {
             int id = clientService.getLength();
@@ -72,7 +53,7 @@ public class WebAppController {
         }
     }
 
-    @PutMapping("/clients/{id}/edit")
+    @PutMapping("/clients/{id}")
     public ResponseEntity<Map<String, Object>> editClient(@PathVariable(value = "id") int idUSer) {
         try {
             this.clientService.editTestClient(idUSer);
@@ -89,7 +70,7 @@ public class WebAppController {
         }
     }
 
-    @DeleteMapping("/clients/{id}/delete")
+    @DeleteMapping("/clients/{id}")
     public ResponseEntity<Map<String, Object>> deleteClient(@PathVariable(value = "id") int idUSer) {
         try {
             this.clientService.delete(idUSer);
