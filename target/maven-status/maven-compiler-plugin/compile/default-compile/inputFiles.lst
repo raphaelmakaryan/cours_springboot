@@ -1,0 +1,10 @@
+/home/user/Documents/COURS/cours_springboot2/src/main/java/fr/raphaelmakaryan/cours_springboot/CoursSpringbootApplication.java
+/home/user/Documents/COURS/cours_springboot2/src/main/java/fr/raphaelmakaryan/cours_springboot/controller/WebAppController.java
+/home/user/Documents/COURS/cours_springboot2/src/main/java/fr/raphaelmakaryan/cours_springboot/entity/Client.java
+/home/user/Documents/COURS/cours_springboot2/src/main/java/fr/raphaelmakaryan/cours_springboot/entity/ClientEntity.java
+/home/user/Documents/COURS/cours_springboot2/src/main/java/fr/raphaelmakaryan/cours_springboot/exception/BadRequestException.java
+/home/user/Documents/COURS/cours_springboot2/src/main/java/fr/raphaelmakaryan/cours_springboot/exception/ClientNotFindException.java
+/home/user/Documents/COURS/cours_springboot2/src/main/java/fr/raphaelmakaryan/cours_springboot/exception/ErrorEntity.java
+/home/user/Documents/COURS/cours_springboot2/src/main/java/fr/raphaelmakaryan/cours_springboot/exception/GlobalExceptionHandler.java
+/home/user/Documents/COURS/cours_springboot2/src/main/java/fr/raphaelmakaryan/cours_springboot/service/ClientDao.java
+/home/user/Documents/COURS/cours_springboot2/src/main/java/fr/raphaelmakaryan/cours_springboot/service/ClientService.java

@@ -1,0 +1,12 @@
+fr/raphaelmakaryan/cours_springboot/exception/ErrorEntity.class
+fr/raphaelmakaryan/cours_springboot/entity/Client.class
+fr/raphaelmakaryan/cours_springboot/exception/ClientNotFindException.class
+fr/raphaelmakaryan/cours_springboot/service/ClientDao.class
+fr/raphaelmakaryan/cours_springboot/entity/Client$ClientBuilder.class
+fr/raphaelmakaryan/cours_springboot/entity/ClientEntity.class
+fr/raphaelmakaryan/cours_springboot/CoursSpringbootApplication.class
+fr/raphaelmakaryan/cours_springboot/service/ClientService.class
+fr/raphaelmakaryan/cours_springboot/entity/ClientEntity$ClientEntityBuilder.class
+fr/raphaelmakaryan/cours_springboot/controller/WebAppController.class
+fr/raphaelmakaryan/cours_springboot/exception/BadRequestException.class
+fr/raphaelmakaryan/cours_springboot/exception/GlobalExceptionHandler.class
