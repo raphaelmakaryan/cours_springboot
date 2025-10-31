@@ -3,9 +3,17 @@ package fr.raphaelmakaryan.cours_springboot.controller;
 import fr.raphaelmakaryan.cours_springboot.service.Client;
 import fr.raphaelmakaryan.cours_springboot.service.ClientDao;
 import fr.raphaelmakaryan.cours_springboot.service.ClientService;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
+import org.springframework.jmx.export.annotation.ManagedOperation;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -28,6 +36,8 @@ public class WebAppController {
         return "Hello World";
     }
 
+    @Operation(summary = "Voir tout les clients de la base de données H2", description = "Requête pour la récupération de tout les clients de la base de données H2")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successful operation", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Client.class))}), @ApiResponse(responseCode = "405", description = "Invalid input")})
     @RequestMapping(path = "/clients", method = RequestMethod.GET)
     public MappingJacksonValue clientsJPA() {
         List<Client> clients = clientDao.findAll();
@@ -35,11 +45,15 @@ public class WebAppController {
         return allClients;
     }
 
+    @Operation(summary = "Voir un client spécifique de la base de données H2", description = "Requête pour la récupération d'un client de la base de données H2")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successful operation", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Client.class))}), @ApiResponse(responseCode = "405", description = "Invalid input")})
     @RequestMapping(path = "/clients/{id}", method = RequestMethod.GET)
-    public Client getClients(@PathVariable(value = "id") int id) {
+    public Client getClients(@Parameter(description = "Identifiant du compte du client", required = true) @PathVariable(value = "id") int id) {
         return clientDao.findById(id);
     }
 
+    @Operation(summary = "Crée un nouveau client dans la base de données H2", description = "Requête pour crée/ajouter client dans la base de données H2")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successful operation"), @ApiResponse(responseCode = "405", description = "Invalid input")})
     @RequestMapping(value = "/clients", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> addClientPost() {
         try {
@@ -66,8 +80,10 @@ public class WebAppController {
         }
     }
 
+    @Operation(summary = "Mettre à jour un client dans la base de données H2", description = "Requête pour mettre a jour un client dans la base de données H2")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successful operation"), @ApiResponse(responseCode = "405", description = "Invalid input")})
     @PutMapping("/clients/{id}")
-    public ResponseEntity<Map<String, Object>> editClient(@PathVariable(value = "id") int idUSer) {
+    public ResponseEntity<Map<String, Object>> editClient(@Parameter(description = "Identifiant du compte du client", required = true) @PathVariable(value = "id") int idUSer) {
         try {
             Client client = clientDao.findById(idUSer);
             client.setfirst_name("Raphael");
@@ -85,8 +101,10 @@ public class WebAppController {
         }
     }
 
+    @Operation(summary = "Supprimer un client de la base de données H2", description = "Requête pour supprimer un client de la base de données H2")
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successful operation"), @ApiResponse(responseCode = "405", description = "Invalid input")})
     @DeleteMapping("/clients/{id}")
-    public ResponseEntity<Map<String, Object>> deleteClient(@PathVariable(value = "id") int idUSer) {
+    public ResponseEntity<Map<String, Object>> deleteClient(@Parameter(description = "Identifiant du compte du client", required = true) @PathVariable(value = "id") int idUSer) {
         try {
             clientDao.delete(clientDao.findById(idUSer));
             Map<String, Object> response = new HashMap<>();
