@@ -3,15 +3,12 @@ package fr.raphaelmakaryan.cours_springboot.controller;
 import fr.raphaelmakaryan.cours_springboot.service.Client;
 import fr.raphaelmakaryan.cours_springboot.service.ClientDao;
 import fr.raphaelmakaryan.cours_springboot.service.ClientService;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.LocalDate;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
