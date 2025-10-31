@@ -5,6 +5,7 @@ import fr.raphaelmakaryan.cours_springboot.service.ClientService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.util.HashMap;
@@ -37,12 +38,22 @@ public class WebAppController {
     @RequestMapping(value = "/clients", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> addClientPost() {
         try {
-            int id = clientService.getLength();
             Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("message", "Votre client a été ajoutée !");
-            response.put("id", id);
-            clientService.save(id, "Sarah", "Popelier", clientService.createCodeAlphanumeric(), LocalDate.of(2025, 12, 2));
+            int id = clientService.getLength();
+            String codeAlpha = clientService.createCodeAlphanumeric();
+            String verifyLicense = "http://localhost:8081/licenses/" + codeAlpha;
+            RestTemplate restTemplate = new RestTemplate();
+            boolean result = restTemplate.getForObject(verifyLicense, Boolean.class);
+            if (result) {
+                clientService.save(id, "Sarah", "Popelier", codeAlpha, LocalDate.of(2025, 12, 2));
+                response.put("success", true);
+                response.put("message", "Votre client a été ajoutée !");
+                response.put("id", id);
+            } else {
+                response.put("success", false);
+                response.put("message", "Cet licenses existe deja !");
+                response.put("id", id);
+            }
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             Map<String, Object> response = new HashMap<>();
