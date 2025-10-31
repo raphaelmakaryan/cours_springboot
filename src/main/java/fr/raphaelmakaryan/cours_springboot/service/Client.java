@@ -1,20 +1,25 @@
 package fr.raphaelmakaryan.cours_springboot.service;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
 import java.time.LocalDate;
 
+@Entity
 public class Client {
+    @Id
     public int id;
     public String firstName;
     public String lastName;
-    public LocalDate birthDate;
-    public String numberDrive;
+    public LocalDate birthday;
+    public String license;
 
-    public Client(int id, String firstName, String lastName, String numberDrive, LocalDate birthDate) {
+    public Client(int id, String firstName, String lastName, String license, LocalDate birthday) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.numberDrive = numberDrive;
-        this.birthDate = birthDate;
+        this.license = license;
+        this.birthday = birthday;
     }
 
     public String getLastName() {
@@ -25,20 +30,20 @@ public class Client {
         this.lastName = lastName;
     }
 
-    public LocalDate getBirthDate() {
-        return birthDate;
+    public LocalDate getbirthday() {
+        return birthday;
     }
 
-    public void setBirthDate(LocalDate birthDate) {
-        this.birthDate = birthDate;
+    public void setbirthday(LocalDate birthday) {
+        this.birthday = birthday;
     }
 
-    public String getNumberDrive() {
-        return numberDrive;
+    public String getlicense() {
+        return license;
     }
 
-    public void setNumberDrive(String numberDrive) {
-        this.numberDrive = numberDrive;
+    public void setlicense(String license) {
+        this.license = license;
     }
 
     public String getFirstName() {
@@ -63,8 +68,8 @@ public class Client {
                 "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", birthDate=" + birthDate +
-                ", numberDrive=" + numberDrive +
+                ", birthday=" + birthday +
+                ", license=" + license +
                 '}';
     }
 }
