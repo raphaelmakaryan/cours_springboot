@@ -1,18 +1,19 @@
 package fr.raphaelmakaryan.cours_springboot.controller;
 
 import fr.raphaelmakaryan.cours_springboot.entity.Client;
+import fr.raphaelmakaryan.cours_springboot.entity.ClientDTO;
 import fr.raphaelmakaryan.cours_springboot.exception.BadRequestException;
 import fr.raphaelmakaryan.cours_springboot.exception.ClientNotFindException;
 import fr.raphaelmakaryan.cours_springboot.service.ClientDao;
 import fr.raphaelmakaryan.cours_springboot.service.ClientService;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJacksonValue;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -20,6 +21,7 @@ import org.springframework.web.client.RestTemplate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 public class WebAppController {
@@ -31,33 +33,123 @@ public class WebAppController {
         this.clientDao = clientDao;
     }
 
+    @Operation(summary = "Page d'accueil")
     @RequestMapping("/")
     public String index() {
         return "Hello World";
     }
 
-    @Operation(summary = "Voir tout les clients de la base de données H2", description = "Requête pour la récupération de tout les clients de la base de données H2")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successful operation", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Client.class))}), @ApiResponse(responseCode = "405", description = "Invalid input")})
-    @RequestMapping(path = "/clients", method = RequestMethod.GET)
-    public MappingJacksonValue clientsJPA() {
-        List<Client> clients = clientDao.findAll();
-        MappingJacksonValue allClients = new MappingJacksonValue(clients);
-        return allClients;
+
+    @Operation(
+            summary = "Voir tous les clients de la base de données ",
+            description = "Requête pour la récupération de tous les clients de la base de données "
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Opération réussi",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ClientDTO.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "405",
+                    description = "Échec de l'opération ",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = "{\"error\": \"Saisie invalide\"}"
+                            )
+                    )
+            )
+    })
+    @GetMapping("/clients")
+    public List<ClientDTO> clientsJPA() {
+        return clientDao.findAll()
+                .stream()
+                .map(c -> new ClientDTO(
+                        c.getId(),
+                        c.getFirst_name(),
+                        c.getLast_name(),
+                        c.getLicense(),
+                        c.getBirthday()
+                ))
+                .collect(Collectors.toList());
     }
 
-    @Operation(summary = "Voir un client spécifique de la base de données H2", description = "Requête pour la récupération d'un client de la base de données H2")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successful operation", content = {@Content(mediaType = "application/json", schema = @Schema(implementation = Client.class))}), @ApiResponse(responseCode = "405", description = "Invalid input")})
+    @Operation(summary = "Voir un client spécifique de la base de données", description = "Requête pour la récupération d'un client de la base de données")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Opération réussi",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ClientDTO.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "405",
+                    description = "Échec de l'opération ",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = "{\"error\": \"Saisie invalide\"}"
+                            )
+                    )
+            )
+    })
     @RequestMapping(path = "/clients/{id}", method = RequestMethod.GET)
-    public Client getClients(@Parameter(description = "Identifiant du compte du client", required = true) @PathVariable(value = "id") int id) {
+    public List<ClientDTO> getClients(@Parameter(description = "Identifiant du compte du client", required = true) @PathVariable(value = "id") int id) {
         try {
-            return clientDao.findById(id);
+            return clientDao.findById(id)
+                    .stream()
+                    .map(c -> new ClientDTO(
+                            c.getId(),
+                            c.getFirst_name(),
+                            c.getLast_name(),
+                            c.getLicense(),
+                            c.getBirthday()
+                    )).collect(Collectors.toList());
         } catch (Exception exception) {
             throw new RuntimeException(exception.getMessage());
         }
     }
 
-    @Operation(summary = "Crée un nouveau client dans la base de données H2", description = "Requête pour crée/ajouter client dans la base de données H2")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successful operation"), @ApiResponse(responseCode = "405", description = "Invalid input")})
+
+    @Operation(summary = "Crée un nouveau client dans la base de données", description = "Requête pour crée/ajouter client dans la base de données")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Opération réussi",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = "{\n" +
+                                            "    \"success\": true,\n" +
+                                            "    \"message\": \"Votre client a été ajoutée !\"\n" +
+                                            "}"
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "405",
+                    description = "Échec de l'opération ",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = {
+                                    @ExampleObject(name = "Erreur de license", value = "{\n" +
+                                            "    \"success\": false,\n" +
+                                            "    \"message\": \"Cet licenses existe deja !\"\n" +
+                                            "}"),
+                                    @ExampleObject(name = "Erreur générale", value = "{\n" +
+                                            "    \"success\": false,\n" +
+                                            "    \"message\": \"Votre client n'a pas été ajoutée !\"\n" +
+                                            "}")
+                            }
+                    )
+            )
+    })
     @RequestMapping(value = "/clients", method = RequestMethod.POST)
     public ResponseEntity<Map<String, Object>> addClientPost() {
         try {
@@ -84,35 +176,106 @@ public class WebAppController {
         }
     }
 
-    @Operation(summary = "Mettre à jour un client dans la base de données H2", description = "Requête pour mettre a jour un client dans la base de données H2")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successful operation"), @ApiResponse(responseCode = "405", description = "Invalid input")})
+
+    @Operation(summary = "Mettre à jour un client dans la base de données", description = "Requête pour mettre a jour un client dans la base de données ")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Opération réussi",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = "{\n" +
+                                            "    \"success\": true,\n" +
+                                            "    \"message\": \"Votre client a été modifié !\"\n" +
+                                            "}"
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "405",
+                    description = "Échec de l'opération ",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = {
+                                    @ExampleObject(
+                                            name = "Erreur générale",
+                                            value = "{\n" +
+                                                    "  \"localDateTime\": \"2025-11-03T08:25:00\",\n" +
+                                                    "  \"message\": \"Client not found with ID : 1\",\n" +
+                                                    "  \"status\": 404\n" +
+                                                    "}"
+                                    )
+
+                            }
+                    )
+            )
+    })
     @PutMapping("/clients/{id}")
     public ResponseEntity<Map<String, Object>> editClient(@Parameter(description = "Identifiant du compte du client", required = true) @PathVariable(value = "id") int idUSer) {
         try {
-            Client client = clientDao.findById(idUSer);
-            client.setfirst_name("Raphael");
-            clientDao.save(client);
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("message", "Votre client a été modifié !");
-            return ResponseEntity.ok(response);
+            List<Client> client = clientDao.findById(idUSer);
+            if (client == null || client.isEmpty()) {
+                throw new ClientNotFindException(idUSer);
+            } else {
+                client.get(0).setFirstName("Raphael");
+                clientDao.save(client.get(0));
+                Map<String, Object> response = new HashMap<>();
+                response.put("success", true);
+                response.put("message", "Votre client a été modifié !");
+                return ResponseEntity.ok(response);
+            }
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
     }
 
-    @Operation(summary = "Supprimer un client de la base de données H2", description = "Requête pour supprimer un client de la base de données H2")
-    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Successful operation"), @ApiResponse(responseCode = "405", description = "Invalid input")})
+    @Operation(summary = "Supprimer un client de la base de données", description = "Requête pour supprimer un client de la base de données")
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Opération réussi",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    value = "{\n" +
+                                            "    \"success\": true,\n" +
+                                            "    \"message\": \"Votre client a été supprimé !\"\n" +
+                                            "}"
+                            )
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "405",
+                    description = "Échec de l'opération ",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = {
+                                    @ExampleObject(
+                                            name = "Erreur générale",
+                                            value = "{\n" +
+                                                    "  \"localDateTime\": \"2025-11-03T08:25:00\",\n" +
+                                                    "  \"message\": \"Client not found with ID : 1 \",\n" +
+                                                    "  \"status\": 404\n" +
+                                                    "}"
+                                    )
+
+                            }
+                    )
+            )
+    })
     @DeleteMapping("/clients/{id}")
     public ResponseEntity<Map<String, Object>> deleteClient(@Parameter(description = "Identifiant du compte du client", required = true) @PathVariable(value = "id") int idUSer) {
-        Client client = clientDao.findById(idUSer);
-        if (client.getId() != idUSer) {
+        List<Client> client = clientDao.findById(idUSer);
+        if (client == null || client.isEmpty()) {
             throw new ClientNotFindException(idUSer);
+        } else {
+            clientDao.delete(client.get(0));
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", "Votre client a été supprimé !");
+            return ResponseEntity.ok(response);
         }
-        clientDao.delete(client);
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("message", "Votre client a été supprimé !");
-        return ResponseEntity.ok(response);
     }
 }
+

@@ -22,10 +22,10 @@ public class ClientService {
 
     public void createClient(String codeAlpha, ClientDao clientDao) {
         Client newClient = new Client();
-        newClient.setfirst_name("Sarah");
-        newClient.setlastName("rrere");
-        newClient.setlicense(codeAlpha);
-        newClient.setbirthday(LocalDate.of(2025, 12, 2));
+        newClient.setFirstName("Sarah");
+        newClient.setLastName("rrere");
+        newClient.setLicense(codeAlpha);
+        newClient.setBirthday(LocalDate.of(2025, 12, 2));
         clientDao.save(newClient);
     }
 }

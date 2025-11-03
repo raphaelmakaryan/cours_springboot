@@ -33,45 +33,38 @@ public class Client {
         super();
     }
 
-    public String getLastName() {
-        return this.last_name;
-    }
-
-    public void setlastName(String last_name) {
-        this.last_name = last_name;
-    }
-
-    public LocalDate getbirthday() {
-        return birthday;
-    }
-
-    public void setbirthday(LocalDate birthday) {
-        this.birthday = birthday;
-    }
-
-    public String getlicense() {
-        return license;
-    }
-
-    public void setlicense(String license) {
-        this.license = license;
-    }
-
-    public String getfirst_name() {
+    public String getFirstName() {
         return first_name;
     }
 
-    public void setfirst_name(String first_name) {
+    public void setFirstName(String first_name) {
         this.first_name = first_name;
     }
 
-    public int getId() {
-        return id;
+    public String getLastName() {
+        return last_name;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setLastName(String last_name) {
+        this.last_name = last_name;
     }
+
+    public String getLicense() {
+        return license;
+    }
+
+    public void setLicense(String license) {
+        this.license = license;
+    }
+
+    public LocalDate getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(LocalDate birthday) {
+        this.birthday = birthday;
+    }
+
 
     @Override
     public String toString() {
